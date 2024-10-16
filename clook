@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIZE 8
+
+void C_LOOK(int arr[], int size, int head);
+int cmpfunc(const void *a, const void *b);
+
+void C_LOOK(int arr[], int size, int head) {
+    int seek_count = 0;
+    int cur_track;
+
+    int sorted_arr[SIZE];
+    for (int i = 0; i < size; i++) {
+        sorted_arr[i] = arr[i];
+    }
+    qsort(sorted_arr, size, sizeof(int), cmpfunc);
+
+    printf("C-LOOK Seek Sequence is:\n");
+    for (int i = 0; i < size; i++) {
+        if (sorted_arr[i] >= head) {
+            cur_track = sorted_arr[i];
+            seek_count += abs(cur_track - head);
+            head = cur_track;
+            printf("%d\n", cur_track);
+        }
+    }
+
+    for (int i = 0; i < size; i++) {
+        if (sorted_arr[i] >= head) {
+            break;
+        }
+        cur_track = sorted_arr[i];
+        seek_count += abs(cur_track - head);
+        head = cur_track;
+        printf("%d\n", cur_track);
+    }
+
+    printf("Total Number Of Seek Operations = %d\n", seek_count);
+    printf("Average Seek Time = %.2f\n", (float)seek_count / size);
+}
+
+int cmpfunc(const void *a, const void *b) {
+    return (*(int*)a - *(int*)b);
+}
+
+int main() {
+    int arr[SIZE];
+    int head;
+
+    printf("Enter %d track requests:\n", SIZE);
+    for (int i = 0; i < SIZE; i++) {
+        printf("Track %d: ", i + 1);
+        scanf("%d", &arr[i]);
+    }
+
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    C_LOOK(arr, SIZE, head);
+
+    return 0;
+}
